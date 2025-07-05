@@ -4,17 +4,16 @@ import useSWR from "swr";
 import * as t from "io-ts";
 import { isLeft } from "fp-ts/Either";
 import { Employee, EmployeeT } from "../models/Employee";
+import { EmployeeListItem } from "./EmployeeListItem";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  Paper,
+  Box,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
 
 export type EmployeesContainerProps = {
   filterText: string;
@@ -58,7 +57,6 @@ function getComparator(
 }
 
 export function EmployeeListContainer({ filterText }: EmployeesContainerProps) {
-  const router = useRouter();
   const [order, setOrder] = useState<OrderDirection>("asc");
   const [orderBy, setOrderBy] = useState<OrderBy>("id");
 
@@ -74,14 +72,13 @@ export function EmployeeListContainer({ filterText }: EmployeesContainerProps) {
     }
   }, [error, filterText]);
 
-  const handleRequestSort = (property: OrderBy) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
-  const handleRowClick = (employeeId: string) => {
-    router.push(`/employee/${employeeId}`);
+  const handleOrderChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newOrder: OrderDirection | null
+  ) => {
+    if (newOrder !== null) {
+      setOrder(newOrder);
+    }
   };
 
   if (isLoading) {
@@ -92,55 +89,47 @@ export function EmployeeListContainer({ filterText }: EmployeesContainerProps) {
     const sortedEmployees = [...data].sort(getComparator(order, orderBy));
 
     return (
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === "id"}
-                  direction={orderBy === "id" ? order : "asc"}
-                  onClick={() => handleRequestSort("id")}
-                >
-                  ID
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === "name"}
-                  direction={orderBy === "name" ? order : "asc"}
-                  onClick={() => handleRequestSort("name")}
-                >
-                  名前
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === "age"}
-                  direction={orderBy === "age" ? order : "asc"}
-                  onClick={() => handleRequestSort("age")}
-                >
-                  年齢
-                </TableSortLabel>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortedEmployees.map((employee) => (
-              <TableRow
-                key={employee.id}
-                hover
-                onClick={() => handleRowClick(employee.id)}
-                sx={{ cursor: "pointer" }}
-              >
-                <TableCell>{employee.id}</TableCell>
-                <TableCell>{employee.name}</TableCell>
-                <TableCell>{employee.age}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Box>
+        <Box
+          display="flex"
+          justifyContent="flex-end"
+          alignItems="center"
+          gap={2}
+          mb={2}
+        >
+          <FormControl size="small" sx={{ minWidth: 120 }}>
+            <InputLabel id="sort-by-label">ソート順</InputLabel>
+            <Select
+              labelId="sort-by-label"
+              value={orderBy}
+              label="ソート順"
+              onChange={(e) => setOrderBy(e.target.value as OrderBy)}
+            >
+              <MenuItem value="id">ID</MenuItem>
+              <MenuItem value="name">名前</MenuItem>
+              <MenuItem value="age">年齢</MenuItem>
+            </Select>
+          </FormControl>
+          <ToggleButtonGroup
+            value={order}
+            exclusive
+            onChange={handleOrderChange}
+            size="small"
+          >
+            <ToggleButton value="asc">
+              昇順
+            </ToggleButton>
+            <ToggleButton value="desc">
+              降順
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+        <Box display="flex" flexDirection="column" gap={1}>
+          {sortedEmployees.map((employee) => (
+            <EmployeeListItem employee={employee} key={employee.id} />
+          ))}
+        </Box>
+      </Box>
     );
   }
 
