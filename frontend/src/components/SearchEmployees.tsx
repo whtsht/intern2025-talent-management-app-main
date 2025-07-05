@@ -1,10 +1,26 @@
 "use client";
-import { Paper, TextField } from "@mui/material";
+import { Paper, TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { useState } from "react";
 import { EmployeeListContainer } from "./EmployeeListContainer";
+import { EmployeeCardContainer } from "./EmployeeCardContainer";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import ViewModuleIcon from "@mui/icons-material/ViewModule";
+import { useSearchParams } from "next/navigation";
 
 export function SearchEmployees() {
+  const searchParams = useSearchParams();
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [view, setView] = useState(searchParams.get("view") || "list");
+
+  const handleViewChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newView: string | null
+  ) => {
+    if (newView !== null) {
+      setView(newView);
+    }
+  };
+
   return (
     <Paper
       sx={{
@@ -20,10 +36,30 @@ export function SearchEmployees() {
         value={searchKeyword}
         onChange={(e) => setSearchKeyword(e.target.value)}
       />
-      <EmployeeListContainer
-        key="employeesContainer"
-        filterText={searchKeyword}
-      />
+      <ToggleButtonGroup
+        value={view}
+        exclusive
+        onChange={handleViewChange}
+        aria-label="view mode"
+      >
+        <ToggleButton value="list" aria-label="list view">
+          <ViewListIcon />
+        </ToggleButton>
+        <ToggleButton value="card" aria-label="card view">
+          <ViewModuleIcon />
+        </ToggleButton>
+      </ToggleButtonGroup>
+      {view === "list" ? (
+        <EmployeeListContainer
+          key="employeesListContainer"
+          filterText={searchKeyword}
+        />
+      ) : (
+        <EmployeeCardContainer
+          key="employeesCardContainer"
+          filterText={searchKeyword}
+        />
+      )}
     </Paper>
   );
 }

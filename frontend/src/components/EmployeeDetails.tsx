@@ -32,12 +32,14 @@ function TabContent({ value, selectedValue, children }: TabContentProps) {
 
 export type EmployeeDetailsProps = {
   employee: Employee;
+  view: string | null;
 };
 
 export function EmployeeDetails(prop: EmployeeDetailsProps) {
   const [selectedTabValue, setSelectedTabValue] =
     useState<TabPanelValue>("basicInfo");
   const employee = prop.employee;
+  const backUrl = prop.view ? `/?view=${prop.view}` : "/";
 
   const handleTabValueChange = useCallback(
     (event: React.SyntheticEvent, newValue: TabPanelValue) => {
@@ -55,7 +57,7 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
         gap={1}
       >
         <Box mb={2}>
-          <Link href="/" style={{ textDecoration: "none" }}>
+          <Link href={backUrl} style={{ textDecoration: "none" }}>
             <Button variant="outlined" startIcon={<ArrowBackIcon />}>
               検索画面に戻る
             </Button>
