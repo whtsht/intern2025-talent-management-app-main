@@ -37,6 +37,7 @@ export function EmployeeListContainer({ filterText }: EmployeesContainerProps) {
     }
   }, [error, filterText]);
   if (data != null) {
+    // list形式
     return data.map((employee) => (
       <EmployeeListItem employee={employee} key={employee.id} />
     ));
