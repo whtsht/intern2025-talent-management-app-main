@@ -91,30 +91,38 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
           </Tabs>
         </Box>
 
-        <TabContent value={"basicInfo"} selectedValue={selectedTabValue}>
-          <Box p={2} display="flex" flexDirection="column" gap={1}>
-            <Typography variant="h6">基本情報</Typography>
-            <Typography>年齢：{employee.age}歳</Typography>
-          </Box>
-        </TabContent>
         <TabContent value={"skills"} selectedValue={selectedTabValue}>
-          <Box p={2} display="flex" flexDirection="column" gap={1}>
-            <Typography variant="h6">スキル</Typography>
+          <Box p={2} display="flex" flexDirection="column" gap={2}>
+            <Box>
+              <Typography variant="h6">スキル</Typography>
+              {employee.skills && employee.skills.length > 0 ? (
+                employee.skills.map((skill, index) => (
+                  <Box key={index} display="flex" gap={1}>
+                    <Typography>・{skill.name}</Typography>
+                    <Typography color="text.secondary">
+                      ({skill.level})
+                    </Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography color="text.secondary">
+                  スキル情報は登録されていません。
+                </Typography>
+              )}
+            </Box>
 
-            {employee.skills && employee.skills.length > 0 ? (
-              employee.skills.map((skill, index) => (
-                <Box key={index} display="flex" gap={1}>
-                  <Typography>・{skill.name}</Typography>
-                  <Typography color="text.secondary">
-                    ({skill.level})
-                  </Typography>
-                </Box>
-              ))
-            ) : (
-              <Typography color="text.secondary">
-                スキル情報は登録されていません。
-              </Typography>
-            )}
+            <Box>
+              <Typography variant="h6">資格</Typography>
+              {employee.certifications && employee.certifications.length > 0 ? (
+                employee.certifications.map((cert, index) => (
+                  <Typography key={index}>・{cert}</Typography>
+                ))
+              ) : (
+                <Typography color="text.secondary">
+                  資格情報は登録されていません。
+                </Typography>
+              )}
+            </Box>
           </Box>
         </TabContent>
         <TabContent value={"others"} selectedValue={selectedTabValue}>
