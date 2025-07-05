@@ -1,7 +1,9 @@
 import PersonIcon from "@mui/icons-material/Person";
-import { Avatar, Box, Paper, Tab, Tabs, Typography } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Avatar, Box, Button, Paper, Tab, Tabs, Typography } from "@mui/material";
 import { Employee } from "../models/Employee";
 import { useCallback, useState } from "react";
+import Link from "next/link";
 
 const tabPanelValue = {
   basicInfo: "基本情報",
@@ -52,6 +54,13 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
         alignItems="flex-start"
         gap={1}
       >
+        <Box mb={2}>
+          <Link href="/" style={{ textDecoration: "none" }}>
+            <Button variant="outlined" startIcon={<ArrowBackIcon />}>
+              検索画面に戻る
+            </Button>
+          </Link>
+        </Box>
         <Box
           display="flex"
           flexDirection="row"
