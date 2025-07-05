@@ -20,6 +20,6 @@ export class EmployeeDatabaseInMemory implements EmployeeDatabase {
         if (filterText === "") {
             return employees;
         }
-        return employees.filter(employee => employee.name === filterText);
+        return employees.filter(employee => employee.name.includes(filterText));
     }
 }
