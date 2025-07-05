@@ -24,7 +24,6 @@ export function EmployeeDetailsContainer() {
   const searchParams = useSearchParams();
   const id = params.id;
   const view = searchParams.get("view");
-
   const { data, error, isLoading } = useSWR<Employee, Error>(
     `/api/employees/${id}`,
     employeeFetcher
