@@ -1,0 +1,21 @@
+name: PreMerge
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  pre-merge-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository   
+      uses: actions/checkout@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '23'
+    
+    - name: Install dependencies
+      run: cd frontend && npm install
+    - name: Build the project
+      run: cd frontend && npm run build
+
