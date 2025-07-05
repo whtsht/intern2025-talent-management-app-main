@@ -11,7 +11,7 @@ export function EmployeeCardItem(prop: EmployeeCardItemProps) {
     const employee = prop.employee;
     return (
         <Link
-            href={`/employee/${employee.id}?view=card`}
+            href={`/employee?id=${employee.id}&view=card`}
             style={{ textDecoration: "none" }}
         >
             <Card
