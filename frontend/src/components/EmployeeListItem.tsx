@@ -1,5 +1,4 @@
 import PersonIcon from "@mui/icons-material/Person";
-
 import { Avatar, Box, Card, CardContent, Typography } from "@mui/material";
 import { Employee } from "../models/Employee";
 import Link from "next/link";
@@ -12,7 +11,7 @@ export function EmployeeListItem(prop: EmployeeListItemProps) {
   const employee = prop.employee;
   return (
     <Link
-      href={`/employee?id=${employee.id}`}
+      href={`/employee/${employee.id}?view=list`}
       style={{ textDecoration: "none" }}
     >
       <Card
