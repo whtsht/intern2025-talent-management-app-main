@@ -1,15 +1,18 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import * as t from "io-ts";
 import { isLeft } from "fp-ts/Either";
 import { EmployeeCardItem } from "./EmployeeCardItem";
 import { Employee, EmployeeT } from "../models/Employee";
+import { EmployeeSort, OrderDirection, OrderBy } from "./EmployeeSort";
+import { getComparator } from "./utlils/employeeSortUtils";
 import { Box } from "@mui/material";
 
 export type EmployeesContainerProps = {
     filterText: string;
 };
+
 
 const EmployeesT = t.array(EmployeeT);
 
@@ -26,7 +29,11 @@ const employeesFetcher = async (url: string): Promise<Employee[]> => {
     return decoded.right;
 };
 
+
 export function EmployeeCardContainer({ filterText, }: EmployeesContainerProps) {
+    const [order, setOrder] = useState<OrderDirection>("asc");
+    const [orderBy, setOrderBy] = useState<OrderBy>("id");
+
     const encodedFilterText = encodeURIComponent(filterText);
     const { data, error, isLoading } = useSWR<Employee[], Error>(
         `/api/employees?filterText=${encodedFilterText}`,
@@ -37,21 +44,35 @@ export function EmployeeCardContainer({ filterText, }: EmployeesContainerProps) 
             console.error(`Failed to fetch employees filtered by filterText`, error);
         }
     }, [error, filterText]);
-    if (data != null) {
-        // card形式
-        return (
-            <Box
-                display="grid"
-                gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))"
-                gap={2}
-            >
-                {data.map((employee) => (
-                    <EmployeeCardItem employee={employee} key={employee.id} />
-                ))}
-            </Box>
-        );
-    }
+
+
     if (isLoading) {
         return <p>Loading employees...</p>;
     }
+
+    if (data != null) {
+        const sortedEmployees = [...data].sort(getComparator(order, orderBy));
+
+        return (
+            <Box>
+                <EmployeeSort
+                    order={order}
+                    orderBy={orderBy}
+                    onOrderChange={setOrder}
+                    onOrderByChange={setOrderBy}
+                />
+                <Box
+                    display="grid"
+                    gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+                    gap={2}
+                >
+                    {sortedEmployees.map((employee) => (
+                        <EmployeeCardItem employee={employee} key={employee.id} />
+                    ))}
+                </Box>
+            </Box>
+        );
+    }
+
+    return null;
 }
