@@ -1,5 +1,5 @@
 "use client";
-import { Paper, TextField, ToggleButton, ToggleButtonGroup, Select, MenuItem, InputLabel, FormControl, Box } from "@mui/material";
+import { Paper, TextField, ToggleButton, ToggleButtonGroup, Select, MenuItem, InputLabel, FormControl, Box, Fab, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import { useState, useEffect } from "react";
 import { EmployeeListContainer } from "./EmployeeListContainer";
 import { EmployeeCardContainer } from "./EmployeeCardContainer";
@@ -7,6 +7,10 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import { useSearchParams } from "next/navigation";
 import { Employee } from "../models/Employee";
+import AddIcon from "@mui/icons-material/Add";
+import AddEmployeeForm from "@/components/AddEmployeeForm";
+import CloseIcon from "@mui/icons-material/Close";
+import { mutate } from "swr";
 
 export function SearchEmployees() {
   const searchParams = useSearchParams();
@@ -14,6 +18,7 @@ export function SearchEmployees() {
   const [view, setView] = useState(searchParams.get("view") || "list");
   const [departmentOptions, setDepartmentOptions] = useState<string[]>([]);
   const [positionOptions, setPositionOptions] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     // 社員一覧を取得し、部署・役職のユニーク値リストを作成
@@ -46,6 +51,35 @@ export function SearchEmployees() {
         p: 2,
       }}
     >
+      <Box display="flex" justifyContent="flex-end">
+        <Fab
+          color="primary"
+          aria-label="add"
+          onClick={() => setOpen(true)}
+          size="medium"
+        >
+          <AddIcon />
+        </Fab>
+      </Box>
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth
+        PaperProps={{ sx: { backgroundColor: 'rgba(255,255,255,0.75)' } }}
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }}>
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpen(false)}
+            sx={{ position: 'absolute', right: 8, top: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <AddEmployeeForm onSuccess={() => {
+            setOpen(false);
+            mutate((key) => typeof key === "string" && key.startsWith("/api/employees"));
+          }} />
+        </DialogContent>
+      </Dialog>
       <TextField
         placeholder="検索キーワードを入力してください"
         value={filters.name}

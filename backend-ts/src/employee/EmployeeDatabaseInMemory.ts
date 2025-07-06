@@ -26,4 +26,8 @@ export class EmployeeDatabaseInMemory implements EmployeeDatabase {
             (filters.position ? employee.position.includes(filters.position) : true)
         );
     }
+
+    async addEmployee(employee: Employee): Promise<void> {
+        this.employees.set(employee.id, employee);
+    }
 }

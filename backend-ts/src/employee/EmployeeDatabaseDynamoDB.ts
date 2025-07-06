@@ -71,6 +71,10 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
                 }
             });
     }
+
+    async addEmployee(employee: Employee): Promise<void> {
+        throw new Error("addEmployee is not implemented for DynamoDB yet.");
+    }
 }
 
 function mapNullable<T, U>(value: T | null | undefined, mapper: (value: T) => U): U | undefined {
