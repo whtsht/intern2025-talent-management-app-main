@@ -1,7 +1,7 @@
 import { DynamoDBClient, GetItemCommand, GetItemCommandInput, ScanCommand, ScanCommandInput } from "@aws-sdk/client-dynamodb";
 import { isLeft } from "fp-ts/Either";
 import { EmployeeDatabase } from "./EmployeeDatabase";
-import { Employee, EmployeeT } from "./Employee";
+import { Employee, EmployeeT,EmployeeFilter } from "./Employee";
 
 export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
     private client: DynamoDBClient;
@@ -37,7 +37,7 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
         }
     }
 
-    async getEmployees(filterText: string): Promise<Employee[]> {
+    async getEmployees(filters: EmployeeFilter): Promise<Employee[]> {
         const input: ScanCommandInput  = {
             TableName: this.tableName,
         };
@@ -47,14 +47,19 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
             return [];
         }
         return items
-            .filter(item => filterText === "" || item.name?.S?.includes(filterText))
-            .map(item => {
-                return {
-                    id: item["id"].S,
-                    name: item["name"].S,
-                    age: mapNullable(item["age"].N, value => parseInt(value, 10)),
-                }
-            }).flatMap(employee => {
+            .filter(item =>
+                (!filters.name || item.name?.S?.includes(filters.name)) &&
+                (!filters.department || item.department?.S?.includes(filters.department)) &&
+                (!filters.position || item.position?.S?.includes(filters.position))
+            )
+            .map(item => ({
+                id: item["id"].S,
+                name: item["name"].S,
+                age: mapNullable(item["age"].N, value => parseInt(value, 10)),
+                department: item["department"]?.S,
+                position: item["position"]?.S,
+            }))
+            .flatMap(employee => {
                 const decoded = EmployeeT.decode(employee);
                 if (isLeft(decoded)) {
                     console.error(`Employee ${employee.id} is missing some fields and skipped. ${JSON.stringify(employee)}`);

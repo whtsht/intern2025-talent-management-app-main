@@ -7,7 +7,7 @@ import { EmployeeListItem } from "./EmployeeListItem";
 import { Employee, EmployeeT } from "../models/Employee";
 
 export type EmployeesContainerProps = {
-  filterText: string;
+  filters: { name: string; department: string; position: string };
 };
 
 const EmployeesT = t.array(EmployeeT);
@@ -25,17 +25,20 @@ const employeesFetcher = async (url: string): Promise<Employee[]> => {
   return decoded.right;
 };
 
-export function EmployeeListContainer({ filterText }: EmployeesContainerProps) {
-  const encodedFilterText = encodeURIComponent(filterText);
+export function EmployeeListContainer({ filters }: EmployeesContainerProps) {
+  const params = new URLSearchParams();
+  if (filters.name) params.append("name", filters.name);
+  if (filters.department) params.append("department", filters.department);
+  if (filters.position) params.append("position", filters.position);
   const { data, error, isLoading } = useSWR<Employee[], Error>(
-    `/api/employees?filterText=${encodedFilterText}`,
+    `/api/employees?${params.toString()}`,
     employeesFetcher
   );
   useEffect(() => {
     if (error != null) {
-      console.error(`Failed to fetch employees filtered by filterText`, error);
+      console.error(`Failed to fetch employees filtered by filterText, department, or position`, error);
     }
-  }, [error, filterText]);
+  }, [error, filters.name, filters.department, filters.position]);
   if (data != null) {
     // list形式
     return data.map((employee) => (
