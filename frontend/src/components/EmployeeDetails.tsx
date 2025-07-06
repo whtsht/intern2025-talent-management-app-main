@@ -1,12 +1,21 @@
 import PersonIcon from "@mui/icons-material/Person";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Avatar, Box, Button, Paper, Tab, Tabs, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
+
+import {
+  Avatar,
+  Box,
+  Button,
+  Paper,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import { Employee } from "../models/Employee";
 import { useCallback, useState } from "react";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
 
-type TabPanelValue = "basicInfo" | "others";
+type TabPanelValue = "basicInfo" | "skills" | "others";
 
 interface TabContentProps {
   value: TabPanelValue;
@@ -47,6 +56,7 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
 
   const tabPanelValue = {
     basicInfo: t("tab_basic_info"),
+    skills: t("tab_skills"),
     others: t("tab_others"),
   };
 
@@ -80,6 +90,7 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
         <Box sx={{ borderBottom: 1, borderColor: "divider", width: "100%" }}>
           <Tabs value={selectedTabValue} onChange={handleTabValueChange}>
             <Tab label={tabPanelValue.basicInfo} value={"basicInfo"} />
+            <Tab label={tabPanelValue.skills} value={"skills"} />
             <Tab label={tabPanelValue.others} value={"others"} />
           </Tabs>
         </Box>
@@ -93,6 +104,41 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
           </Box>
         </TabContent>
 
+        <TabContent value={"skills"} selectedValue={selectedTabValue}>
+          <Box p={2} display="flex" flexDirection="column" gap={2}>
+            <Box>
+              <Typography variant="h6">{t("skills_info")}</Typography>
+
+              {employee.skills && employee.skills.length > 0 ? (
+                employee.skills.map((skill, index) => (
+                  <Box key={index} display="flex" gap={1}>
+                    <Typography>・{skill.name}</Typography>
+                    <Typography color="text.secondary">
+                      ({skill.level})
+                    </Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography color="text.secondary">
+                  {t("not_skills_info")}
+                </Typography>
+              )}
+            </Box>
+
+            <Box>
+              <Typography variant="h6">{t("certifications_info")}</Typography>
+              {employee.certifications && employee.certifications.length > 0 ? (
+                employee.certifications.map((cert, index) => (
+                  <Typography key={index}>・{cert}</Typography>
+                ))
+              ) : (
+                <Typography color="text.secondary">
+                  {t("not_certifications_info")}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+        </TabContent>
         <TabContent value={"others"} selectedValue={selectedTabValue}>
           <Box p={2} display="flex" flexDirection="column" gap={1}>
             <Typography variant="h6">{t("tab_others")}</Typography>
