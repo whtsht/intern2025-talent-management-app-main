@@ -1,0 +1,19 @@
+{
+  "title": "タレントマネジメントシステム",
+  "sub_title_search": "[社員検索]",
+  "sub_title_details": "[社員詳細]",
+  "search_placeholder": "検索キーワードを入力してください",
+  "search_button": "社員検索",
+  "employee_details": "社員詳細",
+  "back_to_search": "検索画面に戻る",
+  "search_sort": "ソート順",
+  "sort_name": "名前",
+  "sort_age": "年齢",
+  "sort_asc": "昇順",
+  "sort_desc": "降順",
+  "intern": "インターン",
+  "engineer_recruitment": "エンジニア採用",
+  "tab_basic_info": "基本情報",
+  "tab_others": "その他",
+  "age": "年齢：{{age}}歳"
+}

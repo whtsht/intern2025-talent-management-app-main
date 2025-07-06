@@ -6,8 +6,10 @@ import { EmployeeCardContainer } from "./EmployeeCardContainer";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import { useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 export function SearchEmployees() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [view, setView] = useState(searchParams.get("view") || "list");
@@ -32,7 +34,7 @@ export function SearchEmployees() {
       }}
     >
       <TextField
-        placeholder="検索キーワードを入力してください"
+        placeholder={t('search_placeholder')}
         value={searchKeyword}
         onChange={(e) => setSearchKeyword(e.target.value)}
       />

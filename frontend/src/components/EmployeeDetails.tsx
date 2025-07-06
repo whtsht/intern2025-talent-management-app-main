@@ -4,13 +4,9 @@ import { Avatar, Box, Button, Paper, Tab, Tabs, Typography } from "@mui/material
 import { Employee } from "../models/Employee";
 import { useCallback, useState } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
-const tabPanelValue = {
-  basicInfo: "基本情報",
-  others: "その他",
-};
-
-type TabPanelValue = keyof typeof tabPanelValue;
+type TabPanelValue = "basicInfo" | "others";
 
 interface TabContentProps {
   value: TabPanelValue;
@@ -36,6 +32,7 @@ export type EmployeeDetailsProps = {
 };
 
 export function EmployeeDetails(prop: EmployeeDetailsProps) {
+  const { t } = useTranslation();
   const [selectedTabValue, setSelectedTabValue] =
     useState<TabPanelValue>("basicInfo");
   const employee = prop.employee;
@@ -48,6 +45,11 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
     []
   );
 
+  const tabPanelValue = {
+    basicInfo: t("tab_basic_info"),
+    others: t("tab_others"),
+  };
+
   return (
     <Paper sx={{ p: 2 }}>
       <Box
@@ -59,7 +61,7 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
         <Box mb={2}>
           <Link href={backUrl} style={{ textDecoration: "none" }}>
             <Button variant="outlined" startIcon={<ArrowBackIcon />}>
-              検索画面に戻る
+              {t("back_to_search")}
             </Button>
           </Link>
         </Box>
@@ -84,14 +86,14 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
 
         <TabContent value={"basicInfo"} selectedValue={selectedTabValue}>
           <Box p={2} display="flex" flexDirection="column" gap={1}>
-            <Typography variant="h6">基本情報</Typography>
-            <Typography>年齢：{employee.age}歳</Typography>
+            <Typography variant="h6">{t("tab_basic_info")}</Typography>
+            <Typography>{t("age", { age: employee.age })}</Typography>
           </Box>
         </TabContent>
 
         <TabContent value={"others"} selectedValue={selectedTabValue}>
           <Box p={2} display="flex" flexDirection="column" gap={1}>
-            <Typography variant="h6">その他</Typography>
+            <Typography variant="h6">{t("tab_others")}</Typography>
           </Box>
         </TabContent>
       </Box>

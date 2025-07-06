@@ -1,9 +1,8 @@
-const pathTitleMap: { [key: string]: string } = {
-  "/": "社員検索",
-  "/employee": "社員詳細",
-};
-
-export function getTitleByPathname(pathname: string): string {
+export const getTitleByPathname = (pathname: string, t: (key: string) => string): string => {
+  const pathTitleMap: { [key: string]: string } = {
+    "/": t("sub_title_search"),
+    "/employee": t("sub_title_details"),
+  };
   // 1. pathTitleMap を 配列(["/","社員検索"]) に変換
   const entries = Object.entries(pathTitleMap);
 
@@ -15,4 +14,4 @@ export function getTitleByPathname(pathname: string): string {
 
   // 4. 見つかればタイトルを返す
   return matchedEntry ? matchedEntry[1] : "";
-}
+};

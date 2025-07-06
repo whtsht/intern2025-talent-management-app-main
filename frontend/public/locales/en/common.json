@@ -1,0 +1,19 @@
+{
+  "title": "Talent Management System",
+  "sub_title_search": "[Employee Search]",
+  "sub_title_details": "[Employee Details]",
+  "search_placeholder": "Enter search keywords",
+  "search_button": "Employee Search",
+  "employee_details": "Employee Details",
+  "back_to_search": "Back to Search",
+  "search_sort": "Sort Type",
+  "sort_name": "Name",
+  "sort_age": "Age",
+  "sort_asc": "Ascending Order",
+  "sort_desc": "Descending Order",
+  "intern": "Intern",
+  "engineer_recruitment": "Engineer recruitment",
+  "tab_basic_info": "Basic Info",
+  "tab_others": "Others",
+  "age": "Age: {{age}}"
+}
