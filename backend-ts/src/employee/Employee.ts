@@ -4,9 +4,9 @@ import * as t from "io-ts";
 const SkillT = t.type({
   name: t.string,
   level: t.union([
-    t.literal("Beginner"),
-    t.literal("Intermediate"),
-    t.literal("Advanced"),
+    t.literal("触れたことがある"),
+    t.literal("ある程度は使える"),
+    t.literal("使いこなすことができる"),
   ]),
 });
 
