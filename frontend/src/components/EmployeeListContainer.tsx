@@ -13,7 +13,6 @@ export type EmployeesContainerProps = {
   filters: { name: string; department: string; position: string };
 };
 
-
 const EmployeesT = t.array(EmployeeT);
 
 const employeesFetcher = async (url: string): Promise<Employee[]> => {
@@ -28,7 +27,6 @@ const employeesFetcher = async (url: string): Promise<Employee[]> => {
   }
   return decoded.right;
 };
-
 
 export function EmployeeListContainer({ filters }: EmployeesContainerProps) {
   const [order, setOrder] = useState<OrderDirection>("asc");
@@ -45,7 +43,10 @@ export function EmployeeListContainer({ filters }: EmployeesContainerProps) {
 
   useEffect(() => {
     if (error != null) {
-      console.error(`Failed to fetch employees filtered by filterText, department, or position`, error);
+      console.error(
+        `Failed to fetch employees filtered by filterText, department, or position`,
+        error
+      );
     }
   }, [error, filters.name, filters.department, filters.position]);
   if (isLoading) {
