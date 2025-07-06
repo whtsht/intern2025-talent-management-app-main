@@ -15,5 +15,11 @@
   "engineer_recruitment": "エンジニア採用",
   "tab_basic_info": "基本情報",
   "tab_others": "その他",
-  "age": "年齢：{{age}}歳"
+  "age": "年齢：{{age}}歳",
+  "department": "部署: {{department}}",
+  "position": "役職: {{position}}",
+  "label_name": "名前",
+  "label_department": "部署",
+  "label_position": "役職",
+  "all": "すべて"
 }

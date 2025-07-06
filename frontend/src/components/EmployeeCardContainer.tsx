@@ -10,7 +10,7 @@ import { getComparator } from "./utlils/employeeSortUtils";
 import { Box } from "@mui/material";
 
 export type EmployeesContainerProps = {
-    filterText: string;
+    filters: { name: string; department: string; position: string };
 };
 
 
@@ -30,20 +30,23 @@ const employeesFetcher = async (url: string): Promise<Employee[]> => {
 };
 
 
-export function EmployeeCardContainer({ filterText, }: EmployeesContainerProps) {
+export function EmployeeCardContainer({ filters }: EmployeesContainerProps) {
     const [order, setOrder] = useState<OrderDirection>("asc");
     const [orderBy, setOrderBy] = useState<OrderBy>("id");
 
-    const encodedFilterText = encodeURIComponent(filterText);
+    const params = new URLSearchParams();
+    if (filters.name) params.append("name", filters.name);
+    if (filters.department) params.append("department", filters.department);
+    if (filters.position) params.append("position", filters.position);
     const { data, error, isLoading } = useSWR<Employee[], Error>(
-        `/api/employees?filterText=${encodedFilterText}`,
+        `/api/employees?${params.toString()}`,
         employeesFetcher
     );
     useEffect(() => {
         if (error != null) {
-            console.error(`Failed to fetch employees filtered by filterText`, error);
+            console.error(`Failed to fetch employees filtered by filterText, department, or position`, error);
         }
-    }, [error, filterText]);
+    }, [error, filters.name, filters.department, filters.position]);
 
 
     if (isLoading) {

@@ -88,6 +88,8 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
           <Box p={2} display="flex" flexDirection="column" gap={1}>
             <Typography variant="h6">{t("tab_basic_info")}</Typography>
             <Typography>{t("age", { age: employee.age })}</Typography>
+            <Typography>{t("department", { department: employee.department ?? t("unset") })}</Typography>
+            <Typography>{t("position", { position: employee.position ?? t("unset") })}</Typography>
           </Box>
         </TabContent>
 

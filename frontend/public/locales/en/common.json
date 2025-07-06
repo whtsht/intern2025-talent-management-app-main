@@ -15,5 +15,11 @@
   "engineer_recruitment": "Engineer recruitment",
   "tab_basic_info": "Basic Info",
   "tab_others": "Others",
-  "age": "Age: {{age}}"
+  "age": "Age: {{age}}",
+  "department": "Department: {{department}}",
+  "position": "Position: {{position}}",
+  "label_name": "Name",
+  "label_department": "Department",
+  "label_position": "Position",
+  "all": "All"
 }
