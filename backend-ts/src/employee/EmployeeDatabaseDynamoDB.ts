@@ -1,4 +1,4 @@
-import { DynamoDBClient, GetItemCommand, GetItemCommandInput, ScanCommand, ScanCommandInput } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, GetItemCommand, GetItemCommandInput, ScanCommand, ScanCommandInput, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { isLeft } from "fp-ts/Either";
 import { EmployeeDatabase } from "./EmployeeDatabase";
 import { Employee, EmployeeT,EmployeeFilter } from "./Employee";
@@ -73,7 +73,17 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
     }
 
     async addEmployee(employee: Employee): Promise<void> {
-        throw new Error("addEmployee is not implemented for DynamoDB yet.");
+        const input = {
+            TableName: this.tableName,
+            Item: {
+                id: { S: employee.id },
+                name: { S: employee.name },
+                age: { N: employee.age.toString() },
+                department: { S: employee.department ?? "" },
+                position: { S: employee.position ?? "" },
+            },
+        };
+        await this.client.send(new PutItemCommand(input));
     }
 }
 
