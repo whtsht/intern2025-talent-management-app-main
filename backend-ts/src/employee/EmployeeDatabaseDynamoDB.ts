@@ -28,6 +28,8 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
             id: id,
             name: item["name"].S,
             age: mapNullable(item["age"].N, value => parseInt(value, 10)),
+            department: item["department"]?.S,
+            position: item["position"]?.S,
         };
         const decoded = EmployeeT.decode(employee);
         if (isLeft(decoded)) {
