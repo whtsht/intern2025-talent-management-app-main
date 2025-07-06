@@ -13,13 +13,16 @@
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^7.1.0",
+    "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.0.2",
     "@mui/material-nextjs": "^7.1.0",
+    "i18next": "^25.3.1",
     "io-ts": "^2.2.22",
     "next": "15.3.0",
+    "next-intl": "^4.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-i18next": "^15.6.0",
     "swr": "^2.3.3"
   },
   "devDependencies": {

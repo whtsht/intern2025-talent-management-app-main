@@ -1,5 +1,7 @@
 import PersonIcon from "@mui/icons-material/Person";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useTranslation } from "react-i18next";
+
 import {
   Avatar,
   Box,
@@ -13,13 +15,7 @@ import { Employee } from "../models/Employee";
 import { useCallback, useState } from "react";
 import Link from "next/link";
 
-const tabPanelValue = {
-  basicInfo: "基本情報",
-  skills: "スキル",
-  others: "その他",
-} as const;
-
-type TabPanelValue = keyof typeof tabPanelValue;
+type TabPanelValue = "basicInfo" | "skills" | "others";
 
 interface TabContentProps {
   value: TabPanelValue;
@@ -45,6 +41,7 @@ export type EmployeeDetailsProps = {
 };
 
 export function EmployeeDetails(prop: EmployeeDetailsProps) {
+  const { t } = useTranslation();
   const [selectedTabValue, setSelectedTabValue] =
     useState<TabPanelValue>("basicInfo");
   const employee = prop.employee;
@@ -57,6 +54,12 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
     []
   );
 
+  const tabPanelValue = {
+    basicInfo: t("tab_basic_info"),
+    skills: t("tab_skills"),
+    others: t("tab_others"),
+  };
+
   return (
     <Paper sx={{ p: 2 }}>
       <Box
@@ -68,7 +71,7 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
         <Box mb={2}>
           <Link href={backUrl} style={{ textDecoration: "none" }}>
             <Button variant="outlined" startIcon={<ArrowBackIcon />}>
-              検索画面に戻る
+              {t("back_to_search")}
             </Button>
           </Link>
         </Box>
@@ -94,17 +97,17 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
 
         <TabContent value={"basicInfo"} selectedValue={selectedTabValue}>
           <Box p={2} display="flex" flexDirection="column" gap={1}>
-            <Typography variant="h6">基本情報</Typography>
-            <Typography>年齢：{employee.age}歳</Typography>
-            <Typography>所属：{employee.department ?? "未設定"}</Typography>
-            <Typography>役職：{employee.position ?? "未設定"}</Typography>
+            <Typography variant="h6">{t("tab_basic_info")}</Typography>
+            <Typography>{t("age", { age: employee.age })}</Typography>
+            <Typography>{t("department", { department: employee.department ?? t("unset") })}</Typography>
+            <Typography>{t("position", { position: employee.position ?? t("unset") })}</Typography>
           </Box>
         </TabContent>
 
         <TabContent value={"skills"} selectedValue={selectedTabValue}>
           <Box p={2} display="flex" flexDirection="column" gap={2}>
             <Box>
-              <Typography variant="h6">スキル</Typography>
+              <Typography variant="h6">{t("skills_info")}</Typography>
 
               {employee.skills && employee.skills.length > 0 ? (
                 employee.skills.map((skill, index) => (
@@ -117,20 +120,20 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
                 ))
               ) : (
                 <Typography color="text.secondary">
-                  スキル情報は登録されていません。
+                  {t("not_skills_info")}
                 </Typography>
               )}
             </Box>
 
             <Box>
-              <Typography variant="h6">資格</Typography>
+              <Typography variant="h6">{t("certifications_info")}</Typography>
               {employee.certifications && employee.certifications.length > 0 ? (
                 employee.certifications.map((cert, index) => (
                   <Typography key={index}>・{cert}</Typography>
                 ))
               ) : (
                 <Typography color="text.secondary">
-                  資格情報は登録されていません。
+                  {t("not_certifications_info")}
                 </Typography>
               )}
             </Box>
@@ -138,7 +141,7 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
         </TabContent>
         <TabContent value={"others"} selectedValue={selectedTabValue}>
           <Box p={2} display="flex" flexDirection="column" gap={1}>
-            <Typography variant="h6">その他</Typography>
+            <Typography variant="h6">{t("tab_others")}</Typography>
           </Box>
         </TabContent>
       </Box>

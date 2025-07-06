@@ -1,4 +1,6 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+
 import {
   Box,
   Select,
@@ -25,6 +27,7 @@ export function EmployeeSort({
   onOrderChange,
   onOrderByChange,
 }: EmployeeSortProps) {
+  const { t } = useTranslation();
   const handleOrderChange = (
     event: React.MouseEvent<HTMLElement>,
     newOrder: OrderDirection | null
@@ -43,16 +46,16 @@ export function EmployeeSort({
       mb={2}
     >
       <FormControl size="small" sx={{ minWidth: 120 }}>
-        <InputLabel id="sort-by-label">ソート順</InputLabel>
+        <InputLabel id="sort-by-label">{t('search_sort')}</InputLabel>
         <Select
           labelId="sort-by-label"
           value={orderBy}
-          label="ソート順"
+          label={t('search_sort')}
           onChange={(e) => onOrderByChange(e.target.value as OrderBy)}
         >
           <MenuItem value="id">ID</MenuItem>
-          <MenuItem value="name">名前</MenuItem>
-          <MenuItem value="age">年齢</MenuItem>
+          <MenuItem value="name">{t('sort_name')}</MenuItem>
+          <MenuItem value="age">{t('sort_age')}</MenuItem>
         </Select>
       </FormControl>
       <ToggleButtonGroup
@@ -61,8 +64,8 @@ export function EmployeeSort({
         onChange={handleOrderChange}
         size="small"
       >
-        <ToggleButton value="asc">昇順</ToggleButton>
-        <ToggleButton value="desc">降順</ToggleButton>
+        <ToggleButton value="asc">{t('sort_asc')}</ToggleButton>
+        <ToggleButton value="desc">{t('sort_desc')}</ToggleButton>
       </ToggleButtonGroup>
     </Box>
   );

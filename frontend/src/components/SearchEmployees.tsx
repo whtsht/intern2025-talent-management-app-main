@@ -6,9 +6,11 @@ import { EmployeeCardContainer } from "./EmployeeCardContainer";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import { useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { Employee } from "../models/Employee";
 
 export function SearchEmployees() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState({ name: "", department: "", position: "" });
   const [view, setView] = useState(searchParams.get("view") || "list");
@@ -47,32 +49,32 @@ export function SearchEmployees() {
       }}
     >
       <TextField
-        placeholder="検索キーワードを入力してください"
+        placeholder={t('search_placeholder')}
         value={filters.name}
         onChange={(e) => setFilters(f => ({ ...f, name: e.target.value }))}
-        label="名前"
+        label={t('label_name')}
       />
       <Box sx={{ display: 'flex', gap: 2 }}>
         <FormControl size="small" sx={{ minWidth: 120, maxWidth: 180 }}>
-          <InputLabel id="department-label">部署</InputLabel>
+          <InputLabel id="department-label">{t('label_department')}</InputLabel>
           <Select
             labelId="department-label"
             value={filters.department}
-            label="部署"
+            label={t('label_department')}
             onChange={(e) => setFilters(f => ({ ...f, department: e.target.value }))}
           >
-            <MenuItem value="">すべて</MenuItem>
+            <MenuItem value="">{t('all')}</MenuItem>
             {departmentOptions.map(option => (
               <MenuItem value={option} key={option}>{option}</MenuItem>
             ))}
           </Select>
         </FormControl>
         <FormControl size="small" sx={{ minWidth: 120, maxWidth: 180 }}>
-          <InputLabel id="position-label">役職</InputLabel>
+          <InputLabel id="position-label">{t('label_position')}</InputLabel>
           <Select
             labelId="position-label"
             value={filters.position}
-            label="役職"
+            label={t('label_position')}
             onChange={(e) => setFilters(f => ({ ...f, position: e.target.value }))}
           >
             <MenuItem value="">すべて</MenuItem>

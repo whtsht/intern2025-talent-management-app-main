@@ -1,7 +1,9 @@
 import { Box, Button, Paper } from "@mui/material";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 
 export function GlobalFooter() {
+  const { t } = useTranslation();
   return (
     <Paper
       sx={{
@@ -40,7 +42,7 @@ export function GlobalFooter() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        インターンシップ
+        {t('intern')}
       </Button>
 
       <Button
@@ -49,7 +51,7 @@ export function GlobalFooter() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        エンジニア採用
+        {t('engineer_recruitment')}
       </Button>
     </Paper>
   );
