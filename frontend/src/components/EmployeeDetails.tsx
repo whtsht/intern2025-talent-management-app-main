@@ -48,6 +48,7 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
   const [selectedTabValue, setSelectedTabValue] =
     useState<TabPanelValue>("basicInfo");
   const employee = prop.employee;
+  const backUrl = prop.view ? `/?view=${prop.view}` : "/";
 
   const handleTabValueChange = useCallback(
     (event: React.SyntheticEvent, newValue: TabPanelValue) => {
@@ -65,7 +66,7 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
         gap={1}
       >
         <Box mb={2}>
-          <Link href="/" style={{ textDecoration: "none" }}>
+          <Link href={backUrl} style={{ textDecoration: "none" }}>
             <Button variant="outlined" startIcon={<ArrowBackIcon />}>
               検索画面に戻る
             </Button>
@@ -91,10 +92,18 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
           </Tabs>
         </Box>
 
+        <TabContent value={"basicInfo"} selectedValue={selectedTabValue}>
+          <Box p={2} display="flex" flexDirection="column" gap={1}>
+            <Typography variant="h6">基本情報</Typography>
+            <Typography>年齢：{employee.age}歳</Typography>
+          </Box>
+        </TabContent>
+
         <TabContent value={"skills"} selectedValue={selectedTabValue}>
           <Box p={2} display="flex" flexDirection="column" gap={2}>
             <Box>
               <Typography variant="h6">スキル</Typography>
+
               {employee.skills && employee.skills.length > 0 ? (
                 employee.skills.map((skill, index) => (
                   <Box key={index} display="flex" gap={1}>
