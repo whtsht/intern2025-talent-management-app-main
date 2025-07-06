@@ -71,11 +71,5 @@ export class WafStack extends cdk.Stack {
     });
 
     this.webAclArn = webAcl.attrArn;
-
-    new cdk.CfnOutput(this, "WebAclArn", {
-      value: webAcl.attrArn,
-      exportName: withPrefix("WebAclArn"),
-      description: "The ARN of the WAF WebACL for CloudFront",
-    });
   }
 }
