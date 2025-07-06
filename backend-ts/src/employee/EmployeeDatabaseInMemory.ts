@@ -28,6 +28,80 @@ export class EmployeeDatabaseInMemory implements EmployeeDatabase {
       department: "Sales",
       position: "Sales Manager",
     });
+    this.employees.set("4", {
+      id: "4",
+      name: "Alice Johnson",
+      age: 35,
+      department: "Finance",
+      position: "Accountant",
+    });
+
+    this.employees.set("5", {
+      id: "5",
+      name: "Robert Brown",
+      age: 41,
+      department: "IT",
+      position: "Tech Lead",
+      skills: [
+        { name: "Node.js", level: "Advanced" },
+        { name: "Docker", level: "Intermediate" },
+      ],
+      certifications: ["Certified Kubernetes Administrator"],
+    });
+
+    this.employees.set("6", {
+      id: "6",
+      name: "佐藤 美咲",
+      age: 30,
+      department: "Design",
+      position: "UI/UX Designer",
+      skills: [
+        { name: "Figma", level: "Advanced" },
+        { name: "Illustrator", level: "Advanced" },
+      ],
+    });
+
+    this.employees.set("7", {
+      id: "7",
+      name: "Tom Wilson",
+      age: 26,
+      department: "Marketing",
+      position: "Analyst",
+    });
+
+    this.employees.set("8", {
+      id: "8",
+      name: "Emily White",
+      age: 29,
+      department: "IT",
+      position: "QA Engineer",
+      certifications: ["ISTQB Foundation Level"],
+    });
+
+    this.employees.set("9", {
+      id: "9",
+      name: "伊藤 拓海",
+      age: 33,
+      department: "Product",
+      position: "Product Manager",
+      skills: [
+        { name: "Agile", level: "Advanced" },
+        { name: "Jira", level: "Intermediate" },
+      ],
+    });
+
+    this.employees.set("10", {
+      id: "10",
+      name: "Chen Li",
+      age: 31,
+      department: "Data Science",
+      position: "Data Analyst",
+      skills: [
+        { name: "Python", level: "Advanced" },
+        { name: "SQL", level: "Advanced" },
+      ],
+      certifications: ["Google Data Analytics"],
+    });
   }
 
   // constructorで代入したデータを取り出すメソッド
