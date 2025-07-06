@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import * as t from "io-ts";
 import { isLeft } from "fp-ts/Either";
@@ -7,12 +7,11 @@ import { Employee, EmployeeT } from "../models/Employee";
 import { EmployeeListItem } from "./EmployeeListItem";
 import { EmployeeSort, OrderDirection, OrderBy } from "./EmployeeSort";
 import { getComparator } from "./utlils/employeeSortUtils";
-import { Box } from "@mui/material";
+import { Box, Stack, Pagination } from "@mui/material";
 
 export type EmployeesContainerProps = {
   filters: { name: string; department: string; position: string };
 };
-
 
 const EmployeesT = t.array(EmployeeT);
 
@@ -29,10 +28,12 @@ const employeesFetcher = async (url: string): Promise<Employee[]> => {
   return decoded.right;
 };
 
-
 export function EmployeeListContainer({ filters }: EmployeesContainerProps) {
   const [order, setOrder] = useState<OrderDirection>("asc");
   const [orderBy, setOrderBy] = useState<OrderBy>("id");
+  const [page, setPage] = React.useState(1);
+  //1ページあたりの表示人数
+  const itemsPerPage = 5;
 
   const params = new URLSearchParams();
   if (filters.name) params.append("name", filters.name);
@@ -45,7 +46,10 @@ export function EmployeeListContainer({ filters }: EmployeesContainerProps) {
 
   useEffect(() => {
     if (error != null) {
-      console.error(`Failed to fetch employees filtered by filterText, department, or position`, error);
+      console.error(
+        `Failed to fetch employees filtered by filterText, department, or position`,
+        error
+      );
     }
   }, [error, filters.name, filters.department, filters.position]);
   if (isLoading) {
@@ -54,9 +58,14 @@ export function EmployeeListContainer({ filters }: EmployeesContainerProps) {
 
   if (data != null) {
     const sortedEmployees = [...data].sort(getComparator(order, orderBy));
+    const pageCount = Math.ceil(sortedEmployees.length / itemsPerPage);
+    const paginatedEmployees = sortedEmployees.slice(
+      (page - 1) * itemsPerPage,
+      page * itemsPerPage
+    );
 
     return (
-      <Box>
+      <Box pb={8}>
         <EmployeeSort
           order={order}
           orderBy={orderBy}
@@ -64,10 +73,18 @@ export function EmployeeListContainer({ filters }: EmployeesContainerProps) {
           onOrderByChange={setOrderBy}
         />
         <Box display="flex" flexDirection="column" gap={1}>
-          {sortedEmployees.map((employee) => (
+          {paginatedEmployees.map((employee) => (
             <EmployeeListItem employee={employee} key={employee.id} />
           ))}
         </Box>
+        <Stack spacing={2} alignItems="center" mt={3}>
+          <Pagination
+            count={pageCount}
+            page={page}
+            onChange={(_, value) => setPage(value)}
+            color="primary"
+          />
+        </Stack>
       </Box>
     );
   }
