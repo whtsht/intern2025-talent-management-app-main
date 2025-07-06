@@ -18,10 +18,4 @@ export const EmployeeT = t.intersection([
   }),
 ]);
 
-export type Employee = {
-  id: string;
-  name: string;
-  age: number;
-  skills?: { name: string; level: string }[];
-  certifications?: string[];
-};
+export type Employee = t.TypeOf<typeof EmployeeT>;
