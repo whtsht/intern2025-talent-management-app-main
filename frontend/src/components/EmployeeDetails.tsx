@@ -1,14 +1,23 @@
 import PersonIcon from "@mui/icons-material/Person";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Avatar, Box, Button, Paper, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Paper,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import { Employee } from "../models/Employee";
 import { useCallback, useState } from "react";
 import Link from "next/link";
 
 const tabPanelValue = {
   basicInfo: "基本情報",
+  skills: "スキル",
   others: "その他",
-};
+} as const;
 
 type TabPanelValue = keyof typeof tabPanelValue;
 
@@ -78,6 +87,7 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
         <Box sx={{ borderBottom: 1, borderColor: "divider", width: "100%" }}>
           <Tabs value={selectedTabValue} onChange={handleTabValueChange}>
             <Tab label={tabPanelValue.basicInfo} value={"basicInfo"} />
+            <Tab label={tabPanelValue.skills} value={"skills"} />
             <Tab label={tabPanelValue.others} value={"others"} />
           </Tabs>
         </Box>
@@ -91,6 +101,41 @@ export function EmployeeDetails(prop: EmployeeDetailsProps) {
           </Box>
         </TabContent>
 
+        <TabContent value={"skills"} selectedValue={selectedTabValue}>
+          <Box p={2} display="flex" flexDirection="column" gap={2}>
+            <Box>
+              <Typography variant="h6">スキル</Typography>
+
+              {employee.skills && employee.skills.length > 0 ? (
+                employee.skills.map((skill, index) => (
+                  <Box key={index} display="flex" gap={1}>
+                    <Typography>・{skill.name}</Typography>
+                    <Typography color="text.secondary">
+                      ({skill.level})
+                    </Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography color="text.secondary">
+                  スキル情報は登録されていません。
+                </Typography>
+              )}
+            </Box>
+
+            <Box>
+              <Typography variant="h6">資格</Typography>
+              {employee.certifications && employee.certifications.length > 0 ? (
+                employee.certifications.map((cert, index) => (
+                  <Typography key={index}>・{cert}</Typography>
+                ))
+              ) : (
+                <Typography color="text.secondary">
+                  資格情報は登録されていません。
+                </Typography>
+              )}
+            </Box>
+          </Box>
+        </TabContent>
         <TabContent value={"others"} selectedValue={selectedTabValue}>
           <Box p={2} display="flex" flexDirection="column" gap={1}>
             <Typography variant="h6">その他</Typography>
