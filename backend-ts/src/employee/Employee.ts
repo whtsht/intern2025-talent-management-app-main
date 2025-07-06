@@ -3,24 +3,25 @@ import * as t from "io-ts";
 // スキル型（io-ts）
 export const SkillT = t.type({
   name: t.string,
-  level: t.string, // 柔軟にするなら自由入力形式でもOK
+  level: t.string,
 });
 
-export const EmployeeT = t.type({
-  id: t.string,
-  name: t.string,
-  age: t.number,
-});
-
-export const OptionalEmployeePropsT = t.partial({
-  skills: t.array(SkillT),
-  certifications: t.array(t.string),
-});
-
-export const FullEmployeeT = t.intersection([
-  EmployeeT,
-  OptionalEmployeePropsT,
+export const EmployeeT = t.intersection([
+  t.partial({
+    skills: t.array(SkillT),
+    certifications: t.array(t.string),
+  }),
+  t.type({
+    id: t.string,
+    name: t.string,
+    age: t.number,
+  }),
 ]);
 
-export type Skill = t.TypeOf<typeof SkillT>;
-export type Employee = t.TypeOf<typeof FullEmployeeT>;
+export type Employee = {
+  id: string;
+  name: string;
+  age: number;
+  skills?: { name: string; level: string }[];
+  certifications?: string[];
+};
