@@ -4,14 +4,17 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
-import * as wafv2 from "aws-cdk-lib/aws-wafv2";
 import { Construct } from "constructs";
 import * as path from "path";
 import { backendDynamoDBTableName } from "./permanent-resources-stack";
 import { withPrefix } from "./commons";
 
+export interface AppStackProps extends cdk.StackProps {
+  webAclArn: string;
+}
+
 export class AppStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: AppStackProps) {
     super(scope, id, props);
 
     // Backend
@@ -42,71 +45,9 @@ export class AppStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // WAF Web ACL
-    const webAcl = new wafv2.CfnWebACL(this, "WebACL", {
-      scope: "CLOUDFRONT",
-      defaultAction: { allow: {} },
-      name: withPrefix("WebACL"),
-      rules: [
-        {
-          name: "AWSManagedRulesCommonRuleSet",
-          priority: 2,
-          statement: {
-            managedRuleGroupStatement: {
-              vendorName: "AWS",
-              name: "AWSManagedRulesCommonRuleSet",
-            },
-          },
-          overrideAction: { none: {} },
-          visibilityConfig: {
-            sampledRequestsEnabled: true,
-            cloudWatchMetricsEnabled: true,
-            metricName: "CommonRuleSetMetric",
-          },
-        },
-        {
-          name: "AWSManagedRulesKnownBadInputsRuleSet",
-          priority: 3,
-          statement: {
-            managedRuleGroupStatement: {
-              vendorName: "AWS",
-              name: "AWSManagedRulesKnownBadInputsRuleSet",
-            },
-          },
-          overrideAction: { none: {} },
-          visibilityConfig: {
-            sampledRequestsEnabled: true,
-            cloudWatchMetricsEnabled: true,
-            metricName: "KnownBadInputsRuleSetMetric",
-          },
-        },
-        {
-          name: "AWSManagedRulesSQLiRuleSet",
-          priority: 4,
-          statement: {
-            managedRuleGroupStatement: {
-              vendorName: "AWS",
-              name: "AWSManagedRulesSQLiRuleSet",
-            },
-          },
-          overrideAction: { none: {} },
-          visibilityConfig: {
-            sampledRequestsEnabled: true,
-            cloudWatchMetricsEnabled: true,
-            metricName: "SQLiRuleSetMetric",
-          },
-        },
-      ],
-      visibilityConfig: {
-        sampledRequestsEnabled: true,
-        cloudWatchMetricsEnabled: true,
-        metricName: "WebACL",
-      },
-    });
-
     // CloudFront Distribution
     const distribution = new cloudfront.Distribution(this, "Distribution", {
-      webAclId: webAcl.attrArn,
+      webAclId: props.webAclArn,
       defaultRootObject: "index.html",
       defaultBehavior: {
         origin: origins.S3BucketOrigin.withOriginAccessControl(frontendBucket, {
@@ -129,13 +70,6 @@ export class AppStack extends cdk.Stack {
           }),
         },
       },
-      errorResponses: [
-        {
-          httpStatus: 403,
-          responseHttpStatus: 200,
-          responsePagePath: "/",
-        },
-      ],
     });
 
     new cdk.CfnOutput(this, "FrontendBucketName", {
