@@ -9,8 +9,12 @@ import * as path from "path";
 import { backendDynamoDBTableName } from "./permanent-resources-stack";
 import { withPrefix } from "./commons";
 
+export interface AppStackProps extends cdk.StackProps {
+  webAclArn: string;
+}
+
 export class AppStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: AppStackProps) {
     super(scope, id, props);
 
     // Backend
@@ -43,6 +47,7 @@ export class AppStack extends cdk.Stack {
 
     // CloudFront Distribution
     const distribution = new cloudfront.Distribution(this, "Distribution", {
+      webAclId: props.webAclArn,
       defaultRootObject: "index.html",
       defaultBehavior: {
         origin: origins.S3BucketOrigin.withOriginAccessControl(frontendBucket, {
@@ -65,13 +70,6 @@ export class AppStack extends cdk.Stack {
           }),
         },
       },
-      errorResponses: [
-        {
-          httpStatus: 403,
-          responseHttpStatus: 200,
-          responsePagePath: "/",
-        },
-      ],
     });
 
     new cdk.CfnOutput(this, "FrontendBucketName", {
