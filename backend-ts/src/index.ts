@@ -1,10 +1,13 @@
 import express, { Request, Response } from "express";
 import { EmployeeDatabaseInMemory } from './employee/EmployeeDatabaseInMemory';
 import { EmployeeFilter } from './employee/Employee';
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 const port = process.env.PORT ?? 8080;
 const database = new EmployeeDatabaseInMemory();
+
+app.use(express.json()); // JSONボディパース用
 
 // クエリパラメータからstring型のみを安全に取得するユーティリティ関数
 function getStringQueryParam(query: any, key: string): string | undefined {
@@ -47,6 +50,34 @@ app.get("/api/employees/:userId", async (req: Request, res: Response) => {
     } catch (e) {
         console.error(`Failed to load the user ${userId}.`, e);
         res.status(500).send();
+    }
+});
+
+app.post("/api/employees", async (req: Request, res: Response) => {
+    const { name, age, department, position } = req.body;
+    // 必須項目バリデーション
+    if (
+        typeof name !== "string" ||
+        typeof age !== "number" ||
+        typeof department !== "string" ||
+        typeof position !== "string"
+    ) {
+        res.status(400).json({ message: "Invalid request body" });
+        return;
+    }
+    const newEmployee = {
+        id: uuidv4(),
+        name,
+        age,
+        department,
+        position
+    };
+    try {
+        await database.addEmployee(newEmployee);
+        res.status(201).json(newEmployee);
+    } catch (e) {
+        console.error("Failed to add employee", e);
+        res.status(500).json({ message: "Failed to add employee" });
     }
 });
 

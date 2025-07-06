@@ -60,8 +60,4 @@ describe("POST /api/employees", () => {
       .set("Content-Type", "application/json");
     expect(res.status).toBe(400);
   });
-});
-
-test("Jestが動作するかどうかのテスト", () => {
-  expect(1 + 1).toBe(2);
-});
+}); 

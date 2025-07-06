@@ -30,21 +30,22 @@ export class EmployeeDatabaseInMemory implements EmployeeDatabase {
     });
   }
 
-  // constructorで代入したデータを取り出すメソッド
-  async getEmployee(id: string): Promise<Employee | undefined> {
-    return this.employees.get(id);
-  }
+    // constructorで代入したデータを取り出すメソッド
+    async getEmployee(id: string): Promise<Employee | undefined> {
+        return this.employees.get(id);
+    }
 
-  // TODO: 複数パラメータでのfilterに対応する
-  async getEmployees(filters: EmployeeFilter): Promise<Employee[]> {
-    const employees = Array.from(this.employees.values());
-    return employees.filter(
-      (employee) =>
-        (filters.name ? employee.name.includes(filters.name) : true) &&
-        (filters.department
-          ? employee.department.includes(filters.department)
-          : true) &&
-        (filters.position ? employee.position.includes(filters.position) : true)
-    );
-  }
+    // TODO: 複数パラメータでのfilterに対応する
+    async getEmployees(filters: EmployeeFilter): Promise<Employee[]> {
+        const employees = Array.from(this.employees.values());
+        return employees.filter(employee =>
+            (filters.name ? employee.name.includes(filters.name) : true) &&
+            (filters.department ? employee.department.includes(filters.department) : true) &&
+            (filters.position ? employee.position.includes(filters.position) : true)
+        );
+    }
+
+    async addEmployee(employee: Employee): Promise<void> {
+        this.employees.set(employee.id, employee);
+    }
 }
