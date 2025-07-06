@@ -3,6 +3,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { Employee } from './employee/Employee';
 import { EmployeeDatabaseDynamoDB } from './employee/EmployeeDatabaseDynamoDB';
 import { EmployeeDatabase } from './employee/EmployeeDatabase';
+import { EmployeeFilter } from './employee/Employee';
 
 const getEmployeeHandler = async (database: EmployeeDatabase, id: string): Promise<LambdaFunctionURLResult> => {
     const employee: Employee | undefined = await database.getEmployee(id);
@@ -16,8 +17,8 @@ const getEmployeeHandler = async (database: EmployeeDatabase, id: string): Promi
     };
 };
 
-const getEmployeesHandler = async (database: EmployeeDatabase, filterText: string): Promise<LambdaFunctionURLResult> => {
-    const employees: Employee[] = await database.getEmployees(filterText);
+const getEmployeesHandler = async (database: EmployeeDatabase, filters: EmployeeFilter): Promise<LambdaFunctionURLResult> => {
+    const employees: Employee[] = await database.getEmployees(filters);
     return {
         statusCode: 200,
         body: JSON.stringify(employees),
@@ -37,7 +38,12 @@ export const handle = async (event: LambdaFunctionURLEvent): Promise<LambdaFunct
         const path = normalizePath(event.requestContext.http.path);
         const query = event.queryStringParameters;
         if (path === "/api/employees") {
-            return getEmployeesHandler(database, query?.filterText ?? "");
+            const filters: EmployeeFilter = {
+                name: query?.name,
+                department: query?.department,
+                position: query?.position,
+            };
+            return getEmployeesHandler(database, filters);
         } else if (path.startsWith("/api/employees/")) {
             const id = path.substring("/api/employees/".length);
             return getEmployeeHandler(database, id);
