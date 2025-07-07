@@ -5,6 +5,7 @@ import * as t from "io-ts";
 import { isLeft } from "fp-ts/Either";
 import { EmployeeListItem } from "./EmployeeListItem";
 import { Employee, EmployeeT } from "../models/Employee";
+import { apiRequest } from "../lib/api";
 
 export type EmployeesContainerProps = {
   filterText: string;
@@ -13,11 +14,7 @@ export type EmployeesContainerProps = {
 const EmployeesT = t.array(EmployeeT);
 
 const employeesFetcher = async (url: string): Promise<Employee[]> => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch employees at ${url}`);
-  }
-  const body = await response.json();
+  const body = await apiRequest(url);
   const decoded = EmployeesT.decode(body);
   if (isLeft(decoded)) {
     throw new Error(`Failed to decode employees ${JSON.stringify(body)}`);
@@ -28,7 +25,7 @@ const employeesFetcher = async (url: string): Promise<Employee[]> => {
 export function EmployeeListContainer({ filterText }: EmployeesContainerProps) {
   const encodedFilterText = encodeURIComponent(filterText);
   const { data, error, isLoading } = useSWR<Employee[], Error>(
-    `/api/employees?filterText=${encodedFilterText}`,
+    `/employees?filterText=${encodedFilterText}`,
     employeesFetcher
   );
   useEffect(() => {

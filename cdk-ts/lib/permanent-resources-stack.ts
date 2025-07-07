@@ -11,11 +11,15 @@ export class PermanentResourcesStack extends cdk.Stack {
     const table = new dynamodb.Table(this, "BackendDynamoDB", {
       tableName: backendDynamoDBTableName(),
       partitionKey: {
-        name: "id",
+        name: "PK",
+        type: dynamodb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: "SK",
         type: dynamodb.AttributeType.STRING,
       },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      removalPolicy: cdk.RemovalPolicy.DESTROY, // for tutorial purposes only
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
     new cdk.CfnOutput(this, "BackendDynamoDBArn", {
       value: table.tableArn,

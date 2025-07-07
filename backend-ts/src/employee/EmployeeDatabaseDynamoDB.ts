@@ -1,4 +1,4 @@
-import { DynamoDBClient, GetItemCommand, GetItemCommandInput, ScanCommand, ScanCommandInput } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, GetItemCommand, GetItemCommandInput, QueryCommand, QueryCommandInput } from "@aws-sdk/client-dynamodb";
 import { isLeft } from "fp-ts/Either";
 import { EmployeeDatabase } from "./EmployeeDatabase";
 import { Employee, EmployeeT } from "./Employee";
@@ -12,11 +12,12 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
         this.tableName = tableName;
     }
 
-    async getEmployee(id: string): Promise<Employee | undefined> {
+    async getEmployee(id: string, userId: string): Promise<Employee | undefined> {
         const input: GetItemCommandInput  = {
             TableName: this.tableName,
             Key: {
-                id: { S: id },
+                PK: { S: `USER#${userId}` },
+                SK: { S: `EMPLOYEE#${id}` },
             },
         };
         const output = await this.client.send(new GetItemCommand(input));
@@ -37,11 +38,16 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
         }
     }
 
-    async getEmployees(filterText: string): Promise<Employee[]> {
-        const input: ScanCommandInput  = {
+    async getEmployees(filterText: string, userId: string): Promise<Employee[]> {
+        const input: QueryCommandInput  = {
             TableName: this.tableName,
+            KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+            ExpressionAttributeValues: {
+                ":pk": { S: `USER#${userId}` },
+                ":sk": { S: "EMPLOYEE#" },
+            },
         };
-        const output = await this.client.send(new ScanCommand(input));
+        const output = await this.client.send(new QueryCommand(input));
         const items = output.Items;
         if (items == null) {
             return [];
@@ -49,8 +55,9 @@ export class EmployeeDatabaseDynamoDB implements EmployeeDatabase {
         return items
             .filter(item => filterText === "" || item.name?.S?.includes(filterText))
             .map(item => {
+                const employeeId = item["SK"].S?.replace("EMPLOYEE#", "");
                 return {
-                    id: item["id"].S,
+                    id: employeeId,
                     name: item["name"].S,
                     age: mapNullable(item["age"].N, value => parseInt(value, 10)),
                 }
